@@ -1,0 +1,29 @@
+#include <stdio.h>
+
+struct process { int pid, at, bt, priority, rt; };
+
+int main() {
+    int n, i, time=0, completed=0;
+    float avgTAT=0, avgWT=0;
+    printf("Number of processes: "); scanf("%d",&n);
+    struct process p[n];
+    for(i=0;i<n;i++){
+        printf("AT, BT, Priority for P%d: ", i+1);
+        scanf("%d %d %d",&p[i].at,&p[i].bt,&p[i].priority);
+        p[i].pid=i+1; p[i].rt=p[i].bt;
+    }
+
+    while(completed<n){
+        int minP=9999, idx=-1;
+        for(i=0;i<n;i++)
+            if(p[i].at<=time && p[i].rt>0 && p[i].priority<minP)
+                minP=p[i].priority, idx=i;
+        if(idx!=-1){
+            p[idx].rt--; time++;
+            if(p[idx].rt==0){ completed++; int tat=time-p[idx].at; avgTAT+=tat; avgWT+=tat-p[idx].bt; }
+        } else time++;
+    }
+
+    printf("Avg TAT: %.2f\nAvg WT: %.2f\n", avgTAT/n, avgWT/n);
+    return 0;
+}
