@@ -1,0 +1,32 @@
+#include <stdio.h>
+
+int main() {
+    int n, i, qt, time=0, done=0;
+    printf("Number of processes: "); scanf("%d",&n);
+    int bt[n], rt[n], at[n];
+    for(i=0;i<n;i++){
+        printf("AT and BT for P%d: ", i+1);
+        scanf("%d %d",&at[i],&bt[i]);
+        rt[i]=bt[i];
+    }
+    printf("Time Quantum: "); scanf("%d",&qt);
+
+    float avgTAT=0, avgWT=0;
+    printf("\nGantt Chart:\nTime\tProcess\n");
+
+    while(done<n){
+        int flag=0;
+        for(i=0;i<n;i++){
+            if(rt[i]>0 && at[i]<=time){
+                flag=1;
+                printf("%d\tP%d\n", time, i+1);
+                if(rt[i]>qt){ time+=qt; rt[i]-=qt; }
+                else { time+=rt[i]; avgTAT+=time-at[i]; avgWT+=time-at[i]-bt[i]; rt[i]=0; done++; }
+            }
+        }
+        if(!flag) time++;
+    }
+
+    printf("\nAvg TAT: %.2f\nAvg WT: %.2f\n", avgTAT/n, avgWT/n);
+    return 0;
+}
